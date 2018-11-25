@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<!--[if IEMobile 7]><html class="iem7"  lang="ru" dir="ltr"><![endif]-->
+<!--[if lte IE 6]><html class="lt-ie9 lt-ie8 lt-ie7"  lang="ru" dir="ltr"><![endif]-->
+<!--[if (IE 7)&(!IEMobile)]><html class="lt-ie9 lt-ie8"  lang="ru" dir="ltr"><![endif]-->
+<!--[if IE 8]><html class="lt-ie9"  lang="ru" dir="ltr"><![endif]-->
+<!--[if (gte IE 9)|(gt IEMobile 7)]><!-->
+<html  lang="ru" dir="ltr" prefix="content: http://purl.org/rss/1.0/modules/content/ dc: http://purl.org/dc/terms/ foaf: http://xmlns.com/foaf/0.1/ og: http://ogp.me/ns# rdfs: http://www.w3.org/2000/01/rdf-schema# sioc: http://rdfs.org/sioc/ns# sioct: http://rdfs.org/sioc/types# skos: http://www.w3.org/2004/02/skos/core# xsd: http://www.w3.org/2001/XMLSchema#">
+<!--<![endif]-->
+
+<head>
+  <title>Количество пациентов</title>  
+  <meta charset="utf-8" />
+  <meta name="MobileOptimized" content="width">
+  <meta name="HandheldFriendly" content="true">
+  <meta name="viewport" content="width=device-width">
+  <meta http-equiv="cleartype" content="on">
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+@import url(https://fonts.googleapis.com/css?family=Source+Sans+Pro);
+body {
+  font-size: 15px;
+  font-family: 'Source Sans Pro', sans-serif;
+  color: #333;
+}
+
+path {
+  cursor: pointer;
+}
+
+form {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto
+}
+
+input {
+  display: flex;
+  float:left;
+  width:100px;
+  margin-bottom:100px;
+}
+
+#pieChart {
+  /* border: red 1px dotted; */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto;
+  width: 800;
+  height: 400;
+}
+
+.text-container {
+  /* border: 1px dotted; */
+  
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;  
+}
+
+#segmentText {
+  width: 100%;
+  padding: 20px;
+  text-align: centre;
+}
+.container{
+  height: 400;
+  width: 800;
+}
+
+.d3-legend-map-container-wrapper {
+  float: right;
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  background-color: #ffffff;
+  border: 1px solid #cccccc;
+  padding: 1em;
+}
+</style>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min.js"></script>
+<script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+
+
+</head>
+
+<div class="container">
+  <div class="row">
+    
+  </div>
+  <div class="row">
+
+    <div id="pieText" class="col-sm-6 text-container">
+      <h1 id="segmentTitle"></h1>
+      <p id="segmentText">Нажмите на отрезок</p>
+    </div>
+    <div class="col-sm-6" id="pieChart">
+    </div>
+    <div class="d3-legend-map-container-wrapper">
+      <div>Выберите разрез</div>
+      <div class="select-year">
+        <select id="dataSelection">
+          <option value="data_V1" selected="selected">Data V1</option>
+          <option value="data_V2">Data V2</option> 
+        </select>
+    </div>
+  </div>
+</div>
+
+
+<script>
+
+  var data_V1 = [{
+  "Type": "A",
+  "Amount": 250,
+  "Description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent rutrum metus vel odio convallis condimentum. Integer ullamcorper ipsum vel dui varius congue. Nulla facilisi. Morbi molestie tortor libero, ac placerat urna mollis ac. Vestibulum id ipsum mauris."
+}, {
+  "Type": "B",
+  "Amount": 1000,
+  "Description": "In hac habitasse platea dictumst. Curabitur lacus neque, congue ac quam a, sagittis accumsan mauris. Suspendisse et nisl eros. Fusce nulla mi, tincidunt non faucibus vitae, aliquam vel dolor. Maecenas imperdiet, elit eget condimentum fermentum, sem lorem fringilla felis, vitae cursus lorem elit in risus."
+}, {
+  "Type": "C",
+  "Amount": 600,
+  "Description": "Aenean faucibus, risus sed eleifend rutrum, leo diam porttitor mauris, a eleifend ipsum ipsum ac ex. Nam scelerisque feugiat augue ac porta. Morbi massa ante, interdum sed nulla nec, finibus cursus augue. Phasellus nunc neque, blandit a nunc ut, mattis elementum arcu."
+}, {
+  "Type": "D",
+  "Amount": 1750,
+  "Description": "Aenean tellus felis, finibus eget placerat nec, ultrices vel elit. Morbi viverra mi ac ornare euismod. Quisque ultrices id nibh aliquam bibendum. Morbi id tortor non magna dictum suscipit. Nunc dolor metus, aliquam vitae felis id, euismod vulputate metus."
+}];
+
+var data_V2 = [{
+  "Type": "E",
+  "Amount": 600,
+  "Description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent rutrum metus vel odio convallis condimentum. Integer ullamcorper ipsum vel dui varius congue. Nulla facilisi. Morbi molestie tortor libero, ac placerat urna mollis ac. Vestibulum id ipsum mauris."
+}, {
+  "Type": "F",
+  "Amount": 2000,
+  "Description": "In hac habitasse platea dictumst. Curabitur lacus neque, congue ac quam a, sagittis accumsan mauris. Suspendisse et nisl eros. Fusce nulla mi, tincidunt non faucibus vitae, aliquam vel dolor. Maecenas imperdiet, elit eget condimentum fermentum, sem lorem fringilla felis, vitae cursus lorem elit in risus."
+}, {
+  "Type": "G",
+  "Amount": 1500,
+  "Description": "Aenean faucibus, risus sed eleifend rutrum, leo diam porttitor mauris, a eleifend ipsum ipsum ac ex. Nam scelerisque feugiat augue ac porta. Morbi massa ante, interdum sed nulla nec, finibus cursus augue. Phasellus nunc neque, blandit a nunc ut, mattis elementum arcu."
+}, {
+  "Type": "H",
+  "Amount": 900,
+  "Description": "Aenean faucibus, risus sed eleifend rutrum, leo diam porttitor mauris, a eleifend ipsum ipsum ac ex. Nam scelerisque feugiat augue ac porta. Morbi massa ante, interdum sed nulla nec, finibus cursus augue. Phasellus nunc neque, blandit a nunc ut, mattis elementum arcu."
+}, {
+  "Type": "I",
+  "Amount": 1100,
+  "Description": "Aenean faucibus, risus sed eleifend rutrum, leo diam porttitor mauris, a eleifend ipsum ipsum ac ex. Nam scelerisque feugiat augue ac porta. Morbi massa ante, interdum sed nulla nec, finibus cursus augue. Phasellus nunc neque, blandit a nunc ut, mattis elementum arcu."
+}];
+
+data = [{
+  "key": "data_V1",
+  "values": data_V1
+}, {
+  "key": "data_V2",
+  "values": data_V2
+}]
+
+var width = parseInt(d3.select('#pieChart').style('width'), 10);
+var height = width;
+var radius = (Math.min(width, height) - 20) / 2;
+
+var type = function getObject(obj) {
+  types = [];
+  for (var i = 0; i < obj.length; i++) {
+    types.push(obj[i].Type);
+  }
+  return types
+};
+
+var pie = d3.layout.pie()
+  .value(function(d) {
+    return d.Amount;
+  })
+  .sort(null);
+
+var arc = d3.svg.arc()
+  .outerRadius(radius - 10)
+  .innerRadius(150);
+
+var arcOver = d3.svg.arc()
+  .outerRadius(radius + 10)
+  .innerRadius(150);
+
+var svg = d3.select("#pieChart").append("svg")
+  .attr("width", '50%')
+  .attr("height", '50%')
+  .attr('viewBox', '0 0 ' + Math.min(width, height) + ' ' + Math.min(width, height))
+  .attr('preserveAspectRatio', 'xMinYMin')
+  .append("g")
+  .attr("transform", "translate(" + radius + "," + height / 2 + ")");
+
+var path = svg.selectAll("path");
+
+var label = d3.select("#dataSelection")
+  .data(data)
+  .on("change", changeData)
+  .filter(function(d, i) {
+  console.log(!i)
+    return !i;
+  })
+  .each(changeData)
+
+changeText = function(text, textID) {
+  d3.select(textID)
+    .text(text)
+};
+
+change = function(d, i) {
+  var angle = 90 - ((d.startAngle * (180 / Math.PI)) + ((d.endAngle - d.startAngle) * (180 / Math.PI) / 2))
+  svg.transition()
+    .duration(1000)
+    .attr("transform", "translate(" + radius + "," + height / 2 + ") rotate(" + angle + ")")
+  d3.selectAll("path")
+    .transition()
+    .attr("d", arc)
+  d3.select(i)
+    .transition()
+    .duration(1000)
+    .attr("d", arcOver)
+};
+
+function changeData() {
+  var selectedData = data[this.selectedIndex]
+  var color = d3.scale.ordinal()
+  .domain(type(selectedData.values))
+  .range(["#8A76A6", "#54B5BF", "#8EA65B", "#F27B35", "#BF4539"]);
+  
+  var data1 = pie(selectedData.values);
+  var dataText = [selectedData.key];
+
+  path = path.data(data1)
+
+  path.enter().append("path")
+    .each(function(d) {
+      this._current = {
+        startAngle: d.endAngle,
+        endAngle: d.endAngle
+      };
+    })
+    .attr("fill", function(d) {
+      return color(d.data.Type);
+    })
+    .on("click", function(d) {
+      var titleText = d.data.Type + ": " + d.data.Amount;
+      var blockText = d.data.Description;
+
+      changeText(titleText, "#segmentTitle");
+      changeText(blockText, "#segmentText");
+      change(d, this);
+    });
+  path.exit()
+    .datum(function(d, i) {
+      return {
+        startAngle: d.endAngle,
+        endAngle: d.endAngle
+      };
+    })
+    .transition()
+    .duration(750)
+    .attrTween("d", arcTween)
+    .remove();
+  path.transition()
+    .duration(750)
+    .attrTween("d", arcTween);
+
+  $('.text-container').hide();
+  $('#segmentTitle').replaceWith('<h1 id="segmentTitle"></h1>');
+  $('#')
+  $('#segmentText').replaceWith('<p id="segmentText">Нажмите на любой отрезок</p>');
+  $('.text-container').fadeIn(400);
+
+};
+
+function key(d) {
+  return d.data.Type;
+}
+
+function arcTween(d) {
+  var i = d3.interpolate(this._current, d);
+  this._current = i(0);
+  return function(t) {
+    return arc(i(t));
+  };
+}
+
+document.querySelector('style').textContent += '@media(max-width:767px) {#pieChart { transform: rotate(90deg); transform-origin: 50% 50%; transition: 1s; max-width: 50%; } .text-container { width: 100%; min-height: 0; }} @media(min-width:768px) {#pieChart { transition: 1s;}}'
+  </script>
+
+</body>
+</html>
