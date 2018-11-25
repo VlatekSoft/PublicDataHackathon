@@ -6,7 +6,7 @@ var settings = {"marginRight": "0",
 				"zoom" : true,
 				"map_json": "./map_assets/russia_mercator.json",
 				"district": "./map_assets/district.json",
-				"population": "./map_assets/population.csv",
+				"population": "./map_assets/population.json",
 				"id_map": "#d3-map",
 				"mapRatio": 0.4,
 				//"filterPerIso": "CHU",
@@ -36,7 +36,7 @@ Number.prototype.gracefulFormatNumber = function(decPlaces, thouSeparator, decSe
   _Global_features = {},
   countById = {},
   nameById = {},
-  period = "1959";
+  period = "2017";
 
   // Setting color domains(intervals of values) for Russia map
   var color_domain = settings.color_domain; 
@@ -74,7 +74,7 @@ Number.prototype.gracefulFormatNumber = function(decPlaces, thouSeparator, decSe
   //Reading map file and data
   queue()
   .defer(d3.json, settings.map_json)
-  .defer(d3.csv, settings.population)
+  .defer(d3.json, settings.population)
   .defer(d3.json, settings.district)
   .await(ready);
 
@@ -92,14 +92,8 @@ Number.prototype.gracefulFormatNumber = function(decPlaces, thouSeparator, decSe
 	   			return;
 	   		}
 	   	}
-	    countById[d.Code] = {"1959": d.year1959, 
-	    					 "1970": d.year1970,
-	    					 "1979": d.year1979,
-	    					 "1989": d.year1989,
-	    					 "2002": d.year2002,
-	    					 "2010": d.year2010,
-	    					 "2013": d.year2013,
-	    					 "2014": d.year2014};
+	    countById[d.Code] = {"2017": d.year2017,
+	    					 "2018": d.year2018};
 	    nameById[d.Code] = d.Name;
 	});
 
